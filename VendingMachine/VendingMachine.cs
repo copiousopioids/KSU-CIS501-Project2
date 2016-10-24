@@ -115,7 +115,8 @@ namespace VendingMachine
             coinInserter100Yen = new CoinInserter(new Coin(COINVALUES[2], NUMCOINS[2], coinDispenser100Yen));
             coinInserter500Yen = new CoinInserter(new Coin(COINVALUES[3], NUMCOINS[3], coinDispenser500Yen));
 
-            coinReturnButton = new CoinReturnButton(this); 
+            coinReturnButton = new CoinReturnButton(this);
+            Can.CoinReturn = coinReturnButton;
 
             // Instantiate your entity and control objects
             // Connect these objects
@@ -301,36 +302,6 @@ namespace VendingMachine
                 }
                 _coinArray[i].CoinCount -= numCoinsToReturn[i];
             }
-
-            //int amt500Yen = (change / _coinArray[3].Value);
-            //if (amt500Yen > _coinArray[3].CoinCount)
-            //{
-            //    amt500Yen = _coinArray[3].CoinCount;
-            //    change -= amt500Yen * _coinArray[3].Value;
-            //    _coinArray[3].CoinCount = 0;
-            //}
-            //else
-            //{
-            //    change -= amt500Yen * _coinArray[3].Value;
-            //    _coinArray[3].CoinCount -= amt500Yen;
-            //}
-
-            //int amt100Yen = ((change / _coinArray[2].Value));
-            //if (amt100Yen > _coinArray[2].CoinCount)
-            //{
-            //    amt100Yen = _coinArray[2].CoinCount;
-            //    change -= amt100Yen * _coinArray[2].Value;
-            //    _coinArray[2].CoinCount = 0;
-            //}
-            //else
-            //{
-            //    change -= amt100Yen * _coinArray[2].Value;
-            //    _coinArray[2].CoinCount -= amt100Yen;
-            //}
-
-
-            //int amt50Yen = (((change % _coinArray[3].Value) % _coinArray[2].Value) / _coinArray[1].Value);
-            //int amt10Yen = ((((change % _coinArray[3].Value) % _coinArray[2].Value) % _coinArray[1].Value) / _coinArray[0].Value);
 
             Coin.TotalInsValue = change;
 

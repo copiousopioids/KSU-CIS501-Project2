@@ -12,6 +12,19 @@ namespace VendingMachine
         private Light _soldOutLight;
         private CanDispenser _canDispenser;
 
+        private static CoinReturnButton _crb;
+        public static CoinReturnButton CoinReturn
+        {
+            get
+            {
+                return _crb;
+            }
+            set
+            {
+                _crb = value;
+            }
+        }
+
 
         private string _name;
 
@@ -48,7 +61,7 @@ namespace VendingMachine
                 _count--;
                 Coin.TotalInsValue -= _price;
                 UpdateLights(Coin.TotalInsValue);
-                
+                Can.CoinReturn.ButtonPressed();
             }
         }
 

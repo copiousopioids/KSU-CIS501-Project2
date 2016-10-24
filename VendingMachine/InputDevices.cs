@@ -14,16 +14,27 @@ namespace VendingMachine
 
     public class CoinInserter
     {
-        // add a field to specify an object that CoinInserted() will firstvisit
+        // add a field to specify an object that CoinInserted() will first visit
+        private Coin _coinAttached;
+
+        public Coin CoinAttached
+        {
+            get
+            {
+                return _coinAttached;
+            }
+        }
 
         // rewrite the following constructor with a constructor that takes an object
         // to be set to the above field
-        public CoinInserter()
+        public CoinInserter(Coin c)
         {
+            _coinAttached = c;
         }
         public void CoinInserted()
         {
             // You can add only one line here
+            _coinAttached.InsertCoin();
         }
 
     }
@@ -31,26 +42,43 @@ namespace VendingMachine
     public class PurchaseButton
     {
         // add a field to specify an object that ButtonPressed() will first visit
-        public PurchaseButton()
-        { 
+
+        private Can _canAttached;
+
+        public Can CanAttached
+        {
+            get
+            {
+                return _canAttached;
+            }
+        }
+
+        public PurchaseButton(Can c)
+        {
+            _canAttached = c;
         }
         public void ButtonPressed()
         {
             // You can add only one line here
+            _canAttached.PurchaseCan();
         }
     }
 
     public class CoinReturnButton
     {
         // add a field to specify an object that Button Pressed will visit
+        private VendingMachine _vendingMachineAttached;
+
         // replace the following default constructor with a constructor that takes
         // an object to be set to the above field
-        public CoinReturnButton()
+        public CoinReturnButton(VendingMachine vm)
         {
+            _vendingMachineAttached = vm;
         }
         public void ButtonPressed()
         {
-            // You can add only one lines here
+            // You can add only one line here
+            _vendingMachineAttached.ReturnCoins(Coin.TotalInsValue);
         }
     }
 }

@@ -43,7 +43,8 @@ namespace VendingMachine
         private CoinReturnButton coinReturnButton;
 
         // Declare fields for your entity and control objects
-
+        public Coin[] _coinArray;
+        public Can[] _canArray;
 
 
         public VendingMachine()
@@ -95,28 +96,53 @@ namespace VendingMachine
             canDispenser2 = new CanDispenser(txtCanDispenser, CANNAMES[2]);
             canDispenser3 = new CanDispenser(txtCanDispenser, CANNAMES[3]);
 
+
+
             // You must replace the following default constructors with 
             // constructors with arguments (non-default constructors)
             // to pass (set) the first object that ButtonPressed() will
             // visit
-            purchaseButton0 = new PurchaseButton();
-            purchaseButton1 = new PurchaseButton();
-            purchaseButton2 = new PurchaseButton();
-            purchaseButton3 = new PurchaseButton();
+            purchaseButton0 = new PurchaseButton(new Can(CANNAMES[0], NUMCANS[0], CANPRICES[0], purchasableLight0, soldOutLight0, canDispenser0));
+            purchaseButton1 = new PurchaseButton(new Can(CANNAMES[1], NUMCANS[1], CANPRICES[1], purchasableLight1, soldOutLight1, canDispenser1));
+            purchaseButton2 = new PurchaseButton(new Can(CANNAMES[2], NUMCANS[2], CANPRICES[2], purchasableLight2, soldOutLight2, canDispenser2));
+            purchaseButton3 = new PurchaseButton(new Can(CANNAMES[3], NUMCANS[3], CANPRICES[3], purchasableLight3, soldOutLight3, canDispenser3));
 
             // You must replace the following default constructors with
             // constructors that take armuments to pass the first object that
             // the CoinInserted() will call
-            coinInserter10Yen = new CoinInserter();
-            coinInserter50Yen = new CoinInserter();
-            coinInserter100Yen = new CoinInserter();
-            coinInserter500Yen = new CoinInserter();
+            coinInserter10Yen = new CoinInserter(new Coin(COINVALUES[0], NUMCOINS[0], coinDispenser10Yen));
+            coinInserter50Yen = new CoinInserter(new Coin(COINVALUES[1], NUMCOINS[1], coinDispenser50Yen));
+            coinInserter100Yen = new CoinInserter(new Coin(COINVALUES[2], NUMCOINS[2], coinDispenser100Yen));
+            coinInserter500Yen = new CoinInserter(new Coin(COINVALUES[3], NUMCOINS[3], coinDispenser500Yen));
 
-            coinReturnButton = new CoinReturnButton();
+            coinReturnButton = new CoinReturnButton(this); 
 
             // Instantiate your entity and control objects
             // Connect these objects
 
+            //Not sure about this...?
+            //Wouldn't keeping the CanDispenser/CoinDispenser objects in an array make this more efficient code?
+            _coinArray = new Coin[NUMCOINTYPES];
+            _canArray = new Can[NUMCANTYPES];
+            
+            //for (int i = 0; i < NUMCOINTYPES; i++)
+            //{
+            //    _coinArray[i] = new Coin(COINVALUES[i], NUMCOINS[i], coinDispensers[i]);
+            //}
+            _coinArray[0] = coinInserter10Yen.CoinAttached;
+            _coinArray[1] = coinInserter50Yen.CoinAttached;
+            _coinArray[2] = coinInserter100Yen.CoinAttached;
+            _coinArray[3] = coinInserter500Yen.CoinAttached;
+
+            //for (int i = 0; i < NUMCANTYPES; i++)
+            //{
+            //    _canArray[i] = new Can(CANNAMES[i], NUMCANS[i], CANPRICES[i], purchaseableLights[i], soldOutLights[i], canDispensers[i]);
+            //}
+            _canArray[0] = purchaseButton0.CanAttached;
+            _canArray[1] = purchaseButton1.CanAttached;
+            _canArray[2] = purchaseButton2.CanAttached;
+            _canArray[3] = purchaseButton3.CanAttached;
+            
             // Display debug information
             displayCanPricesAndNames();
             updateDebugDisplays();
@@ -204,7 +230,18 @@ namespace VendingMachine
 
         private void btnReset_Click(object sender, EventArgs e)
         {
-            // Write the body to reset the field values of entity objects
+            Coin.TotalInsValue = 0;
+            for (int i = 0; i < _coinArray.Length; i++)
+            {
+                _coinArray[i].ResetValues(NUMCOINS[i]);
+            }
+
+            for (int i = 0; i < _coinArray.Length; i++)
+            {
+                _canArray[i].Count = NUMCANS[i];
+            }
+
+            updateDebugDisplays();
         }
 
         private void displayCanPricesAndNames()
@@ -219,23 +256,95 @@ namespace VendingMachine
             displayName3.Display(CANNAMES[3]);
         }
 
-        private void updateDebugDisplays()
+        private void UpdateDisplays()
         {
-            // You need to change XXX to appropriate "object.property"
-            /* 
-            displayNum10Yen.Display(XXX);
-            displayNum50Yen.Display(XXX);
-            displayNum100Yen.Display(XXX);
-            displayNum500Yen.Display(XXX);
-            displayNumCans0.Display(XXX);
-            displayNumCans1.Display(XXX);
-            displayNumCans2.Display(XXX);
-            displayNumCans3.Display(XXX);
-             * */
+            amountDisplay.DisplayAmount(Coin.TotalInsValue);
+
+            for (int i = 0; i < _canArray.Length; i++)
+            {
+                _canArray[i].UpdateLights(Coin.TotalInsValue);
+            }
         }
 
-    
+        private void updateDebugDisplays()
+        {
+            // possibly toggle debug/release here?
 
-        
+            displayNum10Yen.Display(_coinArray[0].CoinCount);
+            displayNum50Yen.Display(_coinArray[1].CoinCount);
+            displayNum100Yen.Display(_coinArray[2].CoinCount);
+            displayNum500Yen.Display(_coinArray[3].CoinCount);
+            displayNumCans0.Display(_canArray[0].Count);
+            displayNumCans1.Display(_canArray[1].Count);
+            displayNumCans2.Display(_canArray[2].Count);
+            displayNumCans3.Display(_canArray[3].Count);
+
+            UpdateDisplays();
+            
+        }
+
+        public void ReturnCoins(int change)
+        {
+            int[] numCoinsToReturn = new int[_coinArray.Length];
+
+            for (int i = _coinArray.Length - 1; i >= 0; i--)
+            {
+                numCoinsToReturn[i] = (change / _coinArray[i].Value);
+                if (numCoinsToReturn[i] > _coinArray[i].CoinCount)
+                {
+                    numCoinsToReturn[i] = _coinArray[i].CoinCount;
+                    change -= numCoinsToReturn[i] * _coinArray[i].Value;
+                }
+                else
+                {
+                    change -= numCoinsToReturn[i] * _coinArray[i].Value;
+                }
+                _coinArray[i].CoinCount -= numCoinsToReturn[i];
+            }
+
+            //int amt500Yen = (change / _coinArray[3].Value);
+            //if (amt500Yen > _coinArray[3].CoinCount)
+            //{
+            //    amt500Yen = _coinArray[3].CoinCount;
+            //    change -= amt500Yen * _coinArray[3].Value;
+            //    _coinArray[3].CoinCount = 0;
+            //}
+            //else
+            //{
+            //    change -= amt500Yen * _coinArray[3].Value;
+            //    _coinArray[3].CoinCount -= amt500Yen;
+            //}
+
+            //int amt100Yen = ((change / _coinArray[2].Value));
+            //if (amt100Yen > _coinArray[2].CoinCount)
+            //{
+            //    amt100Yen = _coinArray[2].CoinCount;
+            //    change -= amt100Yen * _coinArray[2].Value;
+            //    _coinArray[2].CoinCount = 0;
+            //}
+            //else
+            //{
+            //    change -= amt100Yen * _coinArray[2].Value;
+            //    _coinArray[2].CoinCount -= amt100Yen;
+            //}
+
+
+            //int amt50Yen = (((change % _coinArray[3].Value) % _coinArray[2].Value) / _coinArray[1].Value);
+            //int amt10Yen = ((((change % _coinArray[3].Value) % _coinArray[2].Value) % _coinArray[1].Value) / _coinArray[0].Value);
+
+            Coin.TotalInsValue = change;
+
+            coinDispenser500Yen.Actuate(numCoinsToReturn[3]);
+            coinDispenser100Yen.Actuate(numCoinsToReturn[2]);
+            coinDispenser50Yen.Actuate(numCoinsToReturn[1]);
+            coinDispenser10Yen.Actuate(numCoinsToReturn[0]);
+
+            if (change > 0)
+            {
+                noChangeLight.TurnOn3Sec();
+            }
+
+            updateDebugDisplays();
+        }
     }
 }

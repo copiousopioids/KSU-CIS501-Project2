@@ -59,7 +59,12 @@ namespace VendingMachine
             }
         }
 
-
+        /// <summary>
+        /// Constructs a Coin object with a given value, number of coins in stock, and an attached CoinDispenser.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="changeToStart"></param>
+        /// <param name="cd"></param>
         public Coin(int value, int changeToStart, CoinDispenser cd)
         {
             _cd = cd;
@@ -76,6 +81,10 @@ namespace VendingMachine
             _totalInsValue += _value;
         }
 
+        /// <summary>
+        /// Resets the values of Coin using the given change to stock.
+        /// </summary>
+        /// <param name="changeToStart"></param>
         public void ResetValues(int changeToStart)
         {
             _coinCount = changeToStart;

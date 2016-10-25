@@ -64,10 +64,12 @@ namespace VendingMachine
             displayPrice1 = new DebugDisplay(txtPrice1);
             displayPrice2 = new DebugDisplay(txtPrice2);
             displayPrice3 = new DebugDisplay(txtPrice3);
-            displayName0 = new DebugDisplay(txtName0);
+
+            displayName0 = new DebugDisplay(txtName0); //These should be normal displays...?
             displayName1 = new DebugDisplay(txtName1);
             displayName2 = new DebugDisplay(txtName2);
             displayName3 = new DebugDisplay(txtName3);
+
             displayNumCans0 = new DebugDisplay(txtNumCan0);
             displayNumCans1 = new DebugDisplay(txtNumCan1);
             displayNumCans2 = new DebugDisplay(txtNumCan2);
@@ -96,33 +98,20 @@ namespace VendingMachine
             canDispenser2 = new CanDispenser(txtCanDispenser, CANNAMES[2]);
             canDispenser3 = new CanDispenser(txtCanDispenser, CANNAMES[3]);
 
+            coinReturnButton = new CoinReturnButton(this);
 
+            purchaseButton0 = new PurchaseButton(new Can(CANNAMES[0], NUMCANS[0], CANPRICES[0], purchasableLight0, soldOutLight0, canDispenser0, coinReturnButton));
+            purchaseButton1 = new PurchaseButton(new Can(CANNAMES[1], NUMCANS[1], CANPRICES[1], purchasableLight1, soldOutLight1, canDispenser1, coinReturnButton));
+            purchaseButton2 = new PurchaseButton(new Can(CANNAMES[2], NUMCANS[2], CANPRICES[2], purchasableLight2, soldOutLight2, canDispenser2, coinReturnButton));
+            purchaseButton3 = new PurchaseButton(new Can(CANNAMES[3], NUMCANS[3], CANPRICES[3], purchasableLight3, soldOutLight3, canDispenser3, coinReturnButton));
 
-            // You must replace the following default constructors with 
-            // constructors with arguments (non-default constructors)
-            // to pass (set) the first object that ButtonPressed() will
-            // visit
-            purchaseButton0 = new PurchaseButton(new Can(CANNAMES[0], NUMCANS[0], CANPRICES[0], purchasableLight0, soldOutLight0, canDispenser0));
-            purchaseButton1 = new PurchaseButton(new Can(CANNAMES[1], NUMCANS[1], CANPRICES[1], purchasableLight1, soldOutLight1, canDispenser1));
-            purchaseButton2 = new PurchaseButton(new Can(CANNAMES[2], NUMCANS[2], CANPRICES[2], purchasableLight2, soldOutLight2, canDispenser2));
-            purchaseButton3 = new PurchaseButton(new Can(CANNAMES[3], NUMCANS[3], CANPRICES[3], purchasableLight3, soldOutLight3, canDispenser3));
-
-            // You must replace the following default constructors with
-            // constructors that take armuments to pass the first object that
-            // the CoinInserted() will call
             coinInserter10Yen = new CoinInserter(new Coin(COINVALUES[0], NUMCOINS[0], coinDispenser10Yen));
             coinInserter50Yen = new CoinInserter(new Coin(COINVALUES[1], NUMCOINS[1], coinDispenser50Yen));
             coinInserter100Yen = new CoinInserter(new Coin(COINVALUES[2], NUMCOINS[2], coinDispenser100Yen));
             coinInserter500Yen = new CoinInserter(new Coin(COINVALUES[3], NUMCOINS[3], coinDispenser500Yen));
 
-            coinReturnButton = new CoinReturnButton(this);
-            Can.CoinReturn = coinReturnButton;
 
-            // Instantiate your entity and control objects
-            // Connect these objects
-
-            //Not sure about this...?
-            //Wouldn't keeping the CanDispenser/CoinDispenser objects in an array make this more efficient code?
+            // ZM: Wouldn't keeping the CanDispenser/CoinDispenser objects in an array make this more efficient code?
             _coinArray = new Coin[NUMCOINTYPES];
             _canArray = new Can[NUMCANTYPES];
             
@@ -269,8 +258,9 @@ namespace VendingMachine
 
         private void updateDebugDisplays()
         {
-            // possibly toggle debug/release here?
-
+            // ZM: IMO, this should happen in DebugDisplay, but the Can Names need to show and they are
+            // currently set as DebugDisplays, not just normal text displays.
+#if DEBUG
             displayNum10Yen.Display(_coinArray[0].CoinCount);
             displayNum50Yen.Display(_coinArray[1].CoinCount);
             displayNum100Yen.Display(_coinArray[2].CoinCount);
@@ -279,9 +269,18 @@ namespace VendingMachine
             displayNumCans1.Display(_canArray[1].Count);
             displayNumCans2.Display(_canArray[2].Count);
             displayNumCans3.Display(_canArray[3].Count);
+#else
+            displayNum10Yen.Display("");
+            displayNum50Yen.Display("");
+            displayNum100Yen.Display("");
+            displayNum500Yen.Display("");
+            displayNumCans0.Display("");
+            displayNumCans1.Display("");
+            displayNumCans2.Display("");
+            displayNumCans3.Display("");
+#endif
 
             UpdateDisplays();
-            
         }
 
         public void ReturnCoins(int change)

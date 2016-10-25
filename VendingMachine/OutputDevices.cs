@@ -37,12 +37,20 @@ namespace VendingMachine
 
         public void Display(int amount)
         {
+//#if DEBUG
             this.tbx.Text = "" + amount;
+//#else
+            // this.tbx.Text = "XX";
+//#endif
         }
 
         public void Display(string st)
         {
+//#if DEBUG
             this.tbx.Text = st;
+//#else
+           // this.tbx.Text = "XX";
+//#endif
         }
     }
 

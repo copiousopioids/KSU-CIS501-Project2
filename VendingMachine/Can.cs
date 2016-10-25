@@ -8,12 +8,12 @@ namespace VendingMachine
 {
     public class Can
     {
+
         private Light _purchaseableLight;
         private Light _soldOutLight;
         private CanDispenser _canDispenser;
-
-        private static CoinReturnButton _crb;
-        public static CoinReturnButton CoinReturn
+        private CoinReturnButton _crb;
+        public CoinReturnButton CoinReturn
         {
             get
             {
@@ -43,7 +43,17 @@ namespace VendingMachine
 
         private int _price;
 
-        public Can(string name, int count, int price, Light pl, Light sol, CanDispenser cd)
+        /// <summary>
+        /// The Can construcor setting all the values and passing the objects to control and display Can information.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="count"></param>
+        /// <param name="price"></param>
+        /// <param name="pl"></param>
+        /// <param name="sol"></param>
+        /// <param name="cd"></param>
+        /// <param name="crb"></param>
+        public Can(string name, int count, int price, Light pl, Light sol, CanDispenser cd, CoinReturnButton crb)
         {
             _name = name;
             _count = count;
@@ -51,8 +61,12 @@ namespace VendingMachine
             _purchaseableLight = pl;
             _soldOutLight = sol;
             _canDispenser = cd;
+            _crb = crb;
         }
 
+        /// <summary>
+        /// Purchases a can. Reaches through to the controller and "presses" the coin return.
+        /// </summary>
         public void PurchaseCan()
         {
             if (_purchaseableLight.IsOn())
@@ -61,10 +75,14 @@ namespace VendingMachine
                 _count--;
                 Coin.TotalInsValue -= _price;
                 UpdateLights(Coin.TotalInsValue);
-                Can.CoinReturn.ButtonPressed();
+                _crb.ButtonPressed();
             }
         }
 
+        /// <summary>
+        /// Updates the lights corresponding to the can.
+        /// </summary>
+        /// <param name="amount"></param>
         public void UpdateLights(int amount)
         {
             if (amount >= _price && !_soldOutLight.IsOn())

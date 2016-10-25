@@ -246,6 +246,9 @@ namespace VendingMachine
             displayName3.Display(CANNAMES[3]);
         }
 
+        /// <summary>
+        /// Refreshes the displays. Called by updateDebugDisplays for ease of use.
+        /// </summary>
         private void UpdateDisplays()
         {
             amountDisplay.DisplayAmount(Coin.TotalInsValue);
@@ -256,6 +259,9 @@ namespace VendingMachine
             }
         }
 
+        /// <summary>
+        /// Updates the debug displays.
+        /// </summary>
         private void updateDebugDisplays()
         {
             // ZM: IMO, this should happen in DebugDisplay, but the Can Names need to show and they are
@@ -283,6 +289,11 @@ namespace VendingMachine
             UpdateDisplays();
         }
 
+        /// <summary>
+        /// Returns coins based on the current credit the user has accrued.
+        /// Turns on "No Change" light for 3s if there is not a sufficient stock of change in the machine.
+        /// </summary>
+        /// <param name="change"></param>
         public void ReturnCoins(int change)
         {
             int[] numCoinsToReturn = new int[_coinArray.Length];

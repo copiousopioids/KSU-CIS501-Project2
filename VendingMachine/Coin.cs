@@ -26,6 +26,17 @@ namespace VendingMachine
         /// The given Coin's dispenser module.
         /// </summary>
         private CoinDispenser _cd;
+        public CoinDispenser CD
+        {
+            get
+            {
+                return _cd;
+            }
+            set
+            {
+                _cd = value;
+            }
+        }
         
         /// <summary>
         /// The coin value (in Yen).

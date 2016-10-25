@@ -94,5 +94,6 @@ namespace VendingMachine
             else
                 _soldOutLight.TurnOff();
         }
+
     }
 }

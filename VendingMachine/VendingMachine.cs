@@ -45,6 +45,7 @@ namespace VendingMachine
         // Declare fields for your entity and control objects
         public Coin[] _coinArray;
         public Can[] _canArray;
+        //public Controller _control;
 
 
         public VendingMachine()
@@ -99,6 +100,8 @@ namespace VendingMachine
             canDispenser3 = new CanDispenser(txtCanDispenser, CANNAMES[3]);
 
             coinReturnButton = new CoinReturnButton(this);
+            //coinReturnButton = new CoinReturnButton(_control);
+
 
             purchaseButton0 = new PurchaseButton(new Can(CANNAMES[0], NUMCANS[0], CANPRICES[0], purchasableLight0, soldOutLight0, canDispenser0, coinReturnButton));
             purchaseButton1 = new PurchaseButton(new Can(CANNAMES[1], NUMCANS[1], CANPRICES[1], purchasableLight1, soldOutLight1, canDispenser1, coinReturnButton));
@@ -132,7 +135,9 @@ namespace VendingMachine
             _canArray[1] = purchaseButton1.CanAttached;
             _canArray[2] = purchaseButton2.CanAttached;
             _canArray[3] = purchaseButton3.CanAttached;
-            
+
+            //_control = new Controller(amountDisplay, noChangeLight, coinReturnButton, _coinArray, _canArray);
+
             // Display debug information
             displayCanPricesAndNames();
             updateDebugDisplays();
@@ -220,6 +225,7 @@ namespace VendingMachine
 
         private void btnReset_Click(object sender, EventArgs e)
         {
+
             Coin.TotalInsValue = 0;
             for (int i = 0; i < _coinArray.Length; i++)
             {
@@ -230,6 +236,9 @@ namespace VendingMachine
             {
                 _canArray[i].Count = NUMCANS[i];
             }
+
+            //_control.ResetControl(NUMCOINS, NUMCANS);
+
 
             updateDebugDisplays();
         }

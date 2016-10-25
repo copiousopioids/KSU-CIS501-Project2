@@ -60,15 +60,25 @@ namespace VendingMachine
 
     public class CoinReturnButton
     {
-        private VendingMachine _vendingMachineAttached;
+        private VendingMachine _vmAttached;
+        //private Controller _controlAttached;
 
         public CoinReturnButton(VendingMachine vm)
         {
-            _vendingMachineAttached = vm;
+            _vmAttached = vm;
         }
         public void ButtonPressed()
         {
-            _vendingMachineAttached.ReturnCoins(Coin.TotalInsValue);
+            _vmAttached.ReturnCoins(Coin.TotalInsValue);
         }
+
+        //public CoinReturnButton(Controller ctrl)
+        //{
+        //    _controlAttached = ctrl;
+        //}
+        //public void ButtonPressed()
+        //{
+        //    _controlAttached.ReturnCoins(Coin.TotalInsValue);
+        //}
     }
 }

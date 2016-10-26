@@ -60,8 +60,18 @@ namespace VendingMachine
 
     public class CoinReturnButton
     {
+
+        //ENABLE CONTROL CLASS
+
         private VendingMachine _vmAttached;
         //private Controller _controlAttached;
+        //public Controller Control
+        //{
+        //    get
+        //    {
+        //        return _controlAttached;
+        //    }
+        //}
 
         public CoinReturnButton(VendingMachine vm)
         {

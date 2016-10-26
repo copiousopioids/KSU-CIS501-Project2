@@ -45,6 +45,10 @@ namespace VendingMachine
         // Declare fields for your entity and control objects
         public Coin[] _coinArray;
         public Can[] _canArray;
+        public Controller _control;
+        
+        
+        //ENABLE CONTROL CLASS
         //public Controller _control;
 
 
@@ -99,44 +103,39 @@ namespace VendingMachine
             canDispenser2 = new CanDispenser(txtCanDispenser, CANNAMES[2]);
             canDispenser3 = new CanDispenser(txtCanDispenser, CANNAMES[3]);
 
-            coinReturnButton = new CoinReturnButton(this);
-            //coinReturnButton = new CoinReturnButton(_control);
-
-
-            purchaseButton0 = new PurchaseButton(new Can(CANNAMES[0], NUMCANS[0], CANPRICES[0], purchasableLight0, soldOutLight0, canDispenser0, coinReturnButton));
-            purchaseButton1 = new PurchaseButton(new Can(CANNAMES[1], NUMCANS[1], CANPRICES[1], purchasableLight1, soldOutLight1, canDispenser1, coinReturnButton));
-            purchaseButton2 = new PurchaseButton(new Can(CANNAMES[2], NUMCANS[2], CANPRICES[2], purchasableLight2, soldOutLight2, canDispenser2, coinReturnButton));
-            purchaseButton3 = new PurchaseButton(new Can(CANNAMES[3], NUMCANS[3], CANPRICES[3], purchasableLight3, soldOutLight3, canDispenser3, coinReturnButton));
-
-            coinInserter10Yen = new CoinInserter(new Coin(COINVALUES[0], NUMCOINS[0], coinDispenser10Yen));
-            coinInserter50Yen = new CoinInserter(new Coin(COINVALUES[1], NUMCOINS[1], coinDispenser50Yen));
-            coinInserter100Yen = new CoinInserter(new Coin(COINVALUES[2], NUMCOINS[2], coinDispenser100Yen));
-            coinInserter500Yen = new CoinInserter(new Coin(COINVALUES[3], NUMCOINS[3], coinDispenser500Yen));
-
-
-            // ZM: Wouldn't keeping the CanDispenser/CoinDispenser objects in an array make this more efficient code?
             _coinArray = new Coin[NUMCOINTYPES];
             _canArray = new Can[NUMCANTYPES];
+
+            _control = new Controller(amountDisplay, noChangeLight);
+
+            //ENABLE CONTROL CLASS
+            coinReturnButton = new CoinReturnButton(this);
+            //coinReturnButton = new CoinReturnButton(new Controller(amountDisplay, noChangeLight,/* coinReturnButton,*/ _coinArray, _canArray));
+
             
-            //for (int i = 0; i < NUMCOINTYPES; i++)
-            //{
-            //    _coinArray[i] = new Coin(COINVALUES[i], NUMCOINS[i], coinDispensers[i]);
-            //}
-            _coinArray[0] = coinInserter10Yen.CoinAttached;
-            _coinArray[1] = coinInserter50Yen.CoinAttached;
-            _coinArray[2] = coinInserter100Yen.CoinAttached;
-            _coinArray[3] = coinInserter500Yen.CoinAttached;
 
-            //for (int i = 0; i < NUMCANTYPES; i++)
-            //{
-            //    _canArray[i] = new Can(CANNAMES[i], NUMCANS[i], CANPRICES[i], purchaseableLights[i], soldOutLights[i], canDispensers[i]);
-            //}
-            _canArray[0] = purchaseButton0.CanAttached;
-            _canArray[1] = purchaseButton1.CanAttached;
-            _canArray[2] = purchaseButton2.CanAttached;
-            _canArray[3] = purchaseButton3.CanAttached;
+            _canArray[0] = new Can(CANNAMES[0], NUMCANS[0], CANPRICES[0], purchasableLight0, soldOutLight0, canDispenser0, coinReturnButton);
+            _canArray[1] = new Can(CANNAMES[1], NUMCANS[1], CANPRICES[1], purchasableLight1, soldOutLight1, canDispenser1, coinReturnButton);
+            _canArray[2] = new Can(CANNAMES[2], NUMCANS[2], CANPRICES[2], purchasableLight2, soldOutLight2, canDispenser2, coinReturnButton);
+            _canArray[3] = new Can(CANNAMES[3], NUMCANS[3], CANPRICES[3], purchasableLight3, soldOutLight3, canDispenser3, coinReturnButton);
 
-            //_control = new Controller(amountDisplay, noChangeLight, coinReturnButton, _coinArray, _canArray);
+            purchaseButton0 = new PurchaseButton(_canArray[0]);
+            purchaseButton1 = new PurchaseButton(_canArray[1]);
+            purchaseButton2 = new PurchaseButton(_canArray[2]);
+            purchaseButton3 = new PurchaseButton(_canArray[3]);
+
+            _coinArray[0] = new Coin(COINVALUES[0], NUMCOINS[0], coinDispenser10Yen);
+            _coinArray[1] = new Coin(COINVALUES[1], NUMCOINS[1], coinDispenser50Yen);
+            _coinArray[2] = new Coin(COINVALUES[2], NUMCOINS[2], coinDispenser100Yen);
+            _coinArray[3] = new Coin(COINVALUES[3], NUMCOINS[3], coinDispenser500Yen);
+
+            coinInserter10Yen  = new CoinInserter(_coinArray[0]);
+            coinInserter50Yen  = new CoinInserter(_coinArray[1]);
+            coinInserter100Yen = new CoinInserter(_coinArray[2]);
+            coinInserter500Yen = new CoinInserter(_coinArray[3]);
+
+            _control.Coins = _coinArray;
+            _control.Cans = _canArray;
 
             // Display debug information
             displayCanPricesAndNames();
@@ -226,6 +225,8 @@ namespace VendingMachine
         private void btnReset_Click(object sender, EventArgs e)
         {
 
+            //ENABLE CONTROL CLASS
+
             Coin.TotalInsValue = 0;
             for (int i = 0; i < _coinArray.Length; i++)
             {
@@ -237,7 +238,7 @@ namespace VendingMachine
                 _canArray[i].Count = NUMCANS[i];
             }
 
-            //_control.ResetControl(NUMCOINS, NUMCANS);
+            //coinReturnButton.Control.ResetControl(NUMCOINS, NUMCANS);
 
 
             updateDebugDisplays();
